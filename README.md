@@ -1,8 +1,10 @@
-[![AGM - Angular Google Maps](assets/images/angular-google-maps-logo.png)](https://angular-maps.com/)
-
 # AGM - Angular Google Maps
 
-Angular 2+ components for Google Maps. (Previously known as angular2-google-maps)
+> This is *NOT* the official repository, I just fixed a problem with SSR to internal projects.
+> Please follow to [SebastianM AGM](https://github.com/SebastianM/angular-google-maps/) repository
+> for official support and updates.
+
+[![AGM - Angular Google Maps](assets/images/angular-google-maps-logo.png)](https://angular-maps.com/)
 
 -----
 
