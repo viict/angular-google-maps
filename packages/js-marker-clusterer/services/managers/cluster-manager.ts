@@ -6,7 +6,7 @@ import {MarkerManager} from '../../../core/services/managers/marker-manager';
 import {GoogleMapsAPIWrapper} from '../../../core/services/google-maps-api-wrapper';
 import {AgmMarker} from '../../../core/directives/marker';
 import {AgmMarkerCluster} from './../../directives/marker-cluster';
-import {Marker} from '@agm/core/services/google-maps-types';
+import {Marker} from '@a7gm/core/services/google-maps-types';
 import {MarkerClustererInstance, ClusterOptions} from '../google-clusterer-types';
 
 declare var MarkerClusterer: any;

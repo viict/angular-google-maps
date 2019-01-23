@@ -19,7 +19,7 @@
             "jasmine"
         ],
         "paths": {
-            "@agm/*": ["../packages/*"]
+            "@a7gm/*": ["../packages/*"]
         }
     }
 }

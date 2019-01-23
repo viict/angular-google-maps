@@ -16,7 +16,7 @@ packages.forEach(function(pkgName) {
   }
 
   // define the package name
-  basePkgJson.name = `@agm/${pkgName}`
+  basePkgJson.name = `@a7gm/${pkgName}`
 
   // update version
   basePkgJson.version = rootPkgJson.version;

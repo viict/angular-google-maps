@@ -1,5 +1,5 @@
 {
-  "name": "@agm/snazzy-info-window",
+  "name": "@a7gm/snazzy-info-window",
   "version": "INSERT_HERE_VIA_BUILD_PROCESS",
   "private": true,
   "description": "Angular Google Maps (AGM) package for Snazzy Info Window support",
@@ -22,7 +22,7 @@
   },
   "peerDependencies": {
     "@angular/core": "^6.0.0 || ^7.0.0",
-    "@agm/core": "^1.0.0-beta.6",
+    "@a7gm/core": "^1.0.0-beta.6",
     "snazzy-info-window": "^1.1.0"
   },
   "homepage": "https://github.com/SebastianM/angular-google-maps#readme"

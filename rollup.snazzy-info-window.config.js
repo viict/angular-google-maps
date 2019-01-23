@@ -15,12 +15,12 @@ export default {
       'rxjs/operator/toPromise': 'Rx.Observable.prototype',
       'rxjs/Observable': 'Rx',
       'rxjs/Rx': 'Rx',
-      '@agm/core': 'ngmaps.core'
+      '@a7gm/core': 'ngmaps.core'
     },
     sourceMap: true,
     format: 'umd',
   },
   experimentalDynamicImport: true,
   context: 'window',
-  external: ['rxjs', '@angular/core', '@agm/core']
+  external: ['rxjs', '@angular/core', '@a7gm/core']
 }
