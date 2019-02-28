@@ -42,7 +42,7 @@ let markerId = 0;
     'iconOrigin', 'iconAnchor', 'iconSize', 'openInfoWindow', 'opacity', 'visible',
     'zIndex', 'animation'
   ],
-  outputs: ['markerClick', 'dragEnd', 'mouseOver', 'mouseOut']
+  outputs: ['markerClick', 'dragStart', 'drag', 'dragEnd', 'mouseOver', 'mouseOut']
 })
 export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBoundsAccessor {
   /**
@@ -161,9 +161,7 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
    */
   @Output() mouseOut: EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
 
-  /**
-   * @internal
-   */
+  /** @internal */
   @ContentChildren(AgmInfoWindow) infoWindow: QueryList<AgmInfoWindow> = new QueryList<AgmInfoWindow>();
 
   private _markerAddedToManger: boolean = false;
@@ -242,9 +240,7 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
     }
   }
 
-  /**
-   * @internal
-   */
+  /** @internal */
   getFitBoundsDetails$(): Observable<FitBoundsDetails> {
     return this._fitBoundsDetails$.asObservable();
   }
