@@ -1,4 +1,16 @@
-import { AfterContentInit, ContentChildren, Directive, EventEmitter, Input, OnChanges, OnDestroy, Output, QueryList, SimpleChange, forwardRef } from '@angular/core';
+import {
+  AfterContentInit,
+  ContentChildren,
+  Directive,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  Output,
+  QueryList,
+  SimpleChange,
+  forwardRef
+} from '@angular/core';
 import { Observable, ReplaySubject, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { MarkerLabel, MouseEvent } from '../map-types';
@@ -35,15 +47,25 @@ let markerId = 0;
 @Directive({
   selector: 'agm-marker',
   providers: [
-    {provide: FitBoundsAccessor, useExisting: forwardRef(() => AgmMarker)}
+    { provide: FitBoundsAccessor, useExisting: forwardRef(() => AgmMarker) }
   ],
   inputs: [
-    'latitude', 'longitude', 'title', 'label', 'draggable: markerDraggable', 'iconUrl',
-    'openInfoWindow', 'opacity', 'visible', 'zIndex', 'animation'
+    'latitude',
+    'longitude',
+    'title',
+    'label',
+    'draggable: markerDraggable',
+    'iconUrl',
+    'openInfoWindow',
+    'opacity',
+    'visible',
+    'zIndex',
+    'animation'
   ],
   outputs: ['markerClick', 'dragEnd', 'mouseOver', 'mouseOut']
 })
-export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBoundsAccessor {
+export class AgmMarker
+  implements OnDestroy, OnChanges, AfterContentInit, FitBoundsAccessor {
   /**
    * The latitude position of the marker.
    */
@@ -113,7 +135,9 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
   /**
    * This event emitter gets emitted when the user clicks on the marker.
    */
-  @Output() markerClick: EventEmitter<AgmMarker> = new EventEmitter<AgmMarker>();
+  @Output() markerClick: EventEmitter<AgmMarker> = new EventEmitter<
+    AgmMarker
+  >();
 
   /**
    * This event is fired when the user rightclicks on the marker.
@@ -123,7 +147,9 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
   /**
    * This event is fired when the user starts dragging the marker.
    */
-  @Output() dragStart: EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
+  @Output() dragStart: EventEmitter<MouseEvent> = new EventEmitter<
+    MouseEvent
+  >();
 
   /**
    * This event is repeatedly fired while the user drags the marker.
@@ -138,7 +164,9 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
   /**
    * This event is fired when the user mouses over the marker.
    */
-  @Output() mouseOver: EventEmitter<MouseEvent> = new EventEmitter<MouseEvent>();
+  @Output() mouseOver: EventEmitter<MouseEvent> = new EventEmitter<
+    MouseEvent
+  >();
 
   /**
    * This event is fired when the user mouses outside the marker.
@@ -148,15 +176,21 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
   /**
    * @internal
    */
-  @ContentChildren(AgmInfoWindow) infoWindow: QueryList<AgmInfoWindow> = new QueryList<AgmInfoWindow>();
+  @ContentChildren(AgmInfoWindow) infoWindow: QueryList<
+    AgmInfoWindow
+  > = new QueryList<AgmInfoWindow>();
 
   private _markerAddedToManger: boolean = false;
   private _id: string;
   private _observableSubscriptions: Subscription[] = [];
 
-  protected readonly _fitBoundsDetails$: ReplaySubject<FitBoundsDetails> = new ReplaySubject<FitBoundsDetails>(1);
+  protected readonly _fitBoundsDetails$: ReplaySubject<
+    FitBoundsDetails
+  > = new ReplaySubject<FitBoundsDetails>(1);
 
-  constructor(private _markerManager: MarkerManager) { this._id = (markerId++).toString(); }
+  constructor(private _markerManager: MarkerManager) {
+    this._id = (markerId++).toString();
+  }
 
   /* @internal */
   ngAfterContentInit() {
@@ -174,14 +208,17 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
   }
 
   /** @internal */
-  ngOnChanges(changes: {[key: string]: SimpleChange}) {
+  ngOnChanges(changes: { [key: string]: SimpleChange }) {
     if (typeof this.latitude === 'string') {
       this.latitude = Number(this.latitude);
     }
     if (typeof this.longitude === 'string') {
       this.longitude = Number(this.longitude);
     }
-    if (typeof this.latitude !== 'number' || typeof this.longitude !== 'number') {
+    if (
+      typeof this.latitude !== 'number' ||
+      typeof this.longitude !== 'number'
+    ) {
       return;
     }
     if (!this._markerAddedToManger) {
@@ -193,7 +230,9 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
     }
     if (changes['latitude'] || changes['longitude']) {
       this._markerManager.updateMarkerPosition(this);
-      this._updateFitBoundsDetails();
+      // Calling this will add the new coordinates to the fitBounds, resulting
+      // in incorrect zoom or center values.
+      //this._updateFitBoundsDetails();
     }
     if (changes['title']) {
       this._markerManager.updateTitle(this);
@@ -232,69 +271,89 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
   }
 
   protected _updateFitBoundsDetails() {
-    this._fitBoundsDetails$.next({latLng: {lat: this.latitude, lng: this.longitude}});
+    this._fitBoundsDetails$.next({
+      latLng: { lat: this.latitude, lng: this.longitude }
+    });
   }
 
   private _addEventListeners() {
-    const cs = this._markerManager.createEventObservable('click', this).subscribe(() => {
-      if (this.openInfoWindow) {
-        this.infoWindow.forEach(infoWindow => infoWindow.open());
-      }
-      this.markerClick.emit(this);
-    });
+    const cs = this._markerManager
+      .createEventObservable('click', this)
+      .subscribe(() => {
+        if (this.openInfoWindow) {
+          this.infoWindow.forEach(infoWindow => infoWindow.open());
+        }
+        this.markerClick.emit(this);
+      });
     this._observableSubscriptions.push(cs);
 
-    const rc = this._markerManager.createEventObservable('rightclick', this).subscribe(() => {
-      this.markerRightClick.emit(null);
-    });
+    const rc = this._markerManager
+      .createEventObservable('rightclick', this)
+      .subscribe(() => {
+        this.markerRightClick.emit(null);
+      });
     this._observableSubscriptions.push(rc);
 
-    const ds =
-        this._markerManager.createEventObservable<mapTypes.MouseEvent>('dragstart', this)
-            .subscribe((e: mapTypes.MouseEvent) => {
-              this.dragStart.emit(<MouseEvent>{coords: {lat: e.latLng.lat(), lng: e.latLng.lng()}});
-            });
+    const ds = this._markerManager
+      .createEventObservable<mapTypes.MouseEvent>('dragstart', this)
+      .subscribe((e: mapTypes.MouseEvent) => {
+        this.dragStart.emit(<MouseEvent>{
+          coords: { lat: e.latLng.lat(), lng: e.latLng.lng() }
+        });
+      });
     this._observableSubscriptions.push(ds);
 
-    const d =
-        this._markerManager.createEventObservable<mapTypes.MouseEvent>('drag', this)
-            .subscribe((e: mapTypes.MouseEvent) => {
-              this.drag.emit(<MouseEvent>{coords: {lat: e.latLng.lat(), lng: e.latLng.lng()}});
-            });
+    const d = this._markerManager
+      .createEventObservable<mapTypes.MouseEvent>('drag', this)
+      .subscribe((e: mapTypes.MouseEvent) => {
+        this.drag.emit(<MouseEvent>{
+          coords: { lat: e.latLng.lat(), lng: e.latLng.lng() }
+        });
+      });
     this._observableSubscriptions.push(d);
 
-    const de =
-        this._markerManager.createEventObservable<mapTypes.MouseEvent>('dragend', this)
-            .subscribe((e: mapTypes.MouseEvent) => {
-              this.dragEnd.emit(<MouseEvent>{coords: {lat: e.latLng.lat(), lng: e.latLng.lng()}});
-            });
+    const de = this._markerManager
+      .createEventObservable<mapTypes.MouseEvent>('dragend', this)
+      .subscribe((e: mapTypes.MouseEvent) => {
+        this.dragEnd.emit(<MouseEvent>{
+          coords: { lat: e.latLng.lat(), lng: e.latLng.lng() }
+        });
+      });
     this._observableSubscriptions.push(de);
 
-    const mover =
-        this._markerManager.createEventObservable<mapTypes.MouseEvent>('mouseover', this)
-            .subscribe((e: mapTypes.MouseEvent) => {
-              this.mouseOver.emit(<MouseEvent>{coords: {lat: e.latLng.lat(), lng: e.latLng.lng()}});
-            });
+    const mover = this._markerManager
+      .createEventObservable<mapTypes.MouseEvent>('mouseover', this)
+      .subscribe((e: mapTypes.MouseEvent) => {
+        this.mouseOver.emit(<MouseEvent>{
+          coords: { lat: e.latLng.lat(), lng: e.latLng.lng() }
+        });
+      });
     this._observableSubscriptions.push(mover);
 
-    const mout =
-        this._markerManager.createEventObservable<mapTypes.MouseEvent>('mouseout', this)
-            .subscribe((e: mapTypes.MouseEvent) => {
-              this.mouseOut.emit(<MouseEvent>{coords: {lat: e.latLng.lat(), lng: e.latLng.lng()}});
-            });
+    const mout = this._markerManager
+      .createEventObservable<mapTypes.MouseEvent>('mouseout', this)
+      .subscribe((e: mapTypes.MouseEvent) => {
+        this.mouseOut.emit(<MouseEvent>{
+          coords: { lat: e.latLng.lat(), lng: e.latLng.lng() }
+        });
+      });
     this._observableSubscriptions.push(mout);
   }
 
   /** @internal */
-  id(): string { return this._id; }
+  id(): string {
+    return this._id;
+  }
 
   /** @internal */
-  toString(): string { return 'AgmMarker-' + this._id.toString(); }
+  toString(): string {
+    return 'AgmMarker-' + this._id.toString();
+  }
 
   /** @internal */
   ngOnDestroy() {
     this._markerManager.deleteMarker(this);
     // unsubscribe all registered observable subscriptions
-    this._observableSubscriptions.forEach((s) => s.unsubscribe());
+    this._observableSubscriptions.forEach(s => s.unsubscribe());
   }
 }

@@ -1,19 +1,24 @@
-import {Injectable, NgZone} from '@angular/core';
-import {Observable, Observer} from 'rxjs';
+import { Injectable, NgZone } from '@angular/core';
+import { Observable, Observer } from 'rxjs';
 
-import {AgmMarker} from './../../directives/marker';
+import { AgmMarker } from './../../directives/marker';
 
-import {GoogleMapsAPIWrapper} from './../google-maps-api-wrapper';
-import {Marker} from './../google-maps-types';
+import { GoogleMapsAPIWrapper } from './../google-maps-api-wrapper';
+import { Marker } from './../google-maps-types';
 
 declare var google: any;
 
 @Injectable()
 export class MarkerManager {
-  protected _markers: Map<AgmMarker, Promise<Marker>> =
-      new Map<AgmMarker, Promise<Marker>>();
+  protected _markers: Map<AgmMarker, Promise<Marker>> = new Map<
+    AgmMarker,
+    Promise<Marker>
+  >();
 
-  constructor(protected _mapsWrapper: GoogleMapsAPIWrapper, protected _zone: NgZone) {}
+  constructor(
+    protected _mapsWrapper: GoogleMapsAPIWrapper,
+    protected _zone: NgZone
+  ) {}
 
   deleteMarker(marker: AgmMarker): Promise<void> {
     const m = this._markers.get(marker);
@@ -30,40 +35,68 @@ export class MarkerManager {
   }
 
   updateMarkerPosition(marker: AgmMarker): Promise<void> {
-    return this._markers.get(marker).then(
-        (m: Marker) => m.setPosition({lat: marker.latitude, lng: marker.longitude}));
+    const newCenter = {
+      lat: marker.latitude,
+      lng: marker.longitude
+    };
+    // whenever the marker is updated, set the map center to that
+    // marker's new position.
+    // NOTE: if multiple markers are visible and one changes, this might
+    // lead to eratic behavior. For now, we don't have such a scenario
+    this._mapsWrapper.setCenter(newCenter);
+    return this._markers
+      .get(marker)
+      .then((m: Marker) =>
+        m.setPosition({ lat: marker.latitude, lng: marker.longitude })
+      );
   }
 
   updateTitle(marker: AgmMarker): Promise<void> {
-    return this._markers.get(marker).then((m: Marker) => m.setTitle(marker.title));
+    return this._markers
+      .get(marker)
+      .then((m: Marker) => m.setTitle(marker.title));
   }
 
   updateLabel(marker: AgmMarker): Promise<void> {
-    return this._markers.get(marker).then((m: Marker) => { m.setLabel(marker.label); });
+    return this._markers.get(marker).then((m: Marker) => {
+      m.setLabel(marker.label);
+    });
   }
 
   updateDraggable(marker: AgmMarker): Promise<void> {
-    return this._markers.get(marker).then((m: Marker) => m.setDraggable(marker.draggable));
+    return this._markers
+      .get(marker)
+      .then((m: Marker) => m.setDraggable(marker.draggable));
   }
 
   updateIcon(marker: AgmMarker): Promise<void> {
-    return this._markers.get(marker).then((m: Marker) => m.setIcon(marker.iconUrl));
+    return this._markers
+      .get(marker)
+      .then((m: Marker) => m.setIcon(marker.iconUrl));
   }
 
   updateOpacity(marker: AgmMarker): Promise<void> {
-    return this._markers.get(marker).then((m: Marker) => m.setOpacity(marker.opacity));
+    return this._markers
+      .get(marker)
+      .then((m: Marker) => m.setOpacity(marker.opacity));
   }
 
   updateVisible(marker: AgmMarker): Promise<void> {
-    return this._markers.get(marker).then((m: Marker) => m.setVisible(marker.visible));
+    return this._markers
+      .get(marker)
+      .then((m: Marker) => m.setVisible(marker.visible));
   }
 
   updateZIndex(marker: AgmMarker): Promise<void> {
-    return this._markers.get(marker).then((m: Marker) => m.setZIndex(marker.zIndex));
+    return this._markers
+      .get(marker)
+      .then((m: Marker) => m.setZIndex(marker.zIndex));
   }
 
   updateClickable(marker: AgmMarker): Promise<void> {
-    return this._markers.get(marker).then((m: Marker) => m.setClickable(marker.clickable));
+    return this._markers
+      .get(marker)
+      .then((m: Marker) => m.setClickable(marker.clickable));
   }
 
   updateAnimation(marker: AgmMarker): Promise<void> {
@@ -78,7 +111,7 @@ export class MarkerManager {
 
   addMarker(marker: AgmMarker) {
     const markerPromise = this._mapsWrapper.createMarker({
-      position: {lat: marker.latitude, lng: marker.longitude},
+      position: { lat: marker.latitude, lng: marker.longitude },
       label: marker.label,
       draggable: marker.draggable,
       icon: marker.iconUrl,
@@ -87,7 +120,10 @@ export class MarkerManager {
       zIndex: marker.zIndex,
       title: marker.title,
       clickable: marker.clickable,
-      animation: (typeof marker.animation === 'string') ? google.maps.Animation[marker.animation] : marker.animation
+      animation:
+        typeof marker.animation === 'string'
+          ? google.maps.Animation[marker.animation]
+          : marker.animation
     });
 
     this._markers.set(marker, markerPromise);
@@ -97,10 +133,15 @@ export class MarkerManager {
     return this._markers.get(marker);
   }
 
-  createEventObservable<T>(eventName: string, marker: AgmMarker): Observable<T> {
+  createEventObservable<T>(
+    eventName: string,
+    marker: AgmMarker
+  ): Observable<T> {
     return new Observable((observer: Observer<T>) => {
       this._markers.get(marker).then((m: Marker) => {
-        m.addListener(eventName, (e: T) => this._zone.run(() => observer.next(e)));
+        m.addListener(eventName, (e: T) =>
+          this._zone.run(() => observer.next(e))
+        );
       });
     });
   }
