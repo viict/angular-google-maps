@@ -1,7 +1,7 @@
 {
   "name": "@a7gm/_dev",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Angular components for Google Maps",
   "repository": {
     "type": "git",
