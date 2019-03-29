@@ -193,7 +193,9 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
     }
     if (changes['latitude'] || changes['longitude']) {
       this._markerManager.updateMarkerPosition(this);
-      this._updateFitBoundsDetails();
+      // Calling this will add the new coordinates to the fitBounds, resulting
+      // in incorrect zoom or center values.
+      // this._updateFitBoundsDetails();
     }
     if (changes['title']) {
       this._markerManager.updateTitle(this);

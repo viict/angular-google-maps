@@ -30,6 +30,16 @@ export class MarkerManager {
   }
 
   updateMarkerPosition(marker: AgmMarker): Promise<void> {
+    const newCenter = {
+      lat: marker.latitude,
+      lng: marker.longitude
+    };
+    // whenever the marker is updated, set the map center to that
+    // marker's new position.
+
+     // NOTE: if multiple markers are visible and one changes, this might
+    // lead to eratic behavior. For now, we don't have such a scenario
+    this._mapsWrapper.setCenter(newCenter);
     return this._markers.get(marker).then(
         (m: Marker) => m.setPosition({lat: marker.latitude, lng: marker.longitude}));
   }
