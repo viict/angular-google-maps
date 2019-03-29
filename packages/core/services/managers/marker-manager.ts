@@ -41,6 +41,7 @@ export class MarkerManager {
     };
     // whenever the marker is updated, set the map center to that
     // marker's new position.
+
     // NOTE: if multiple markers are visible and one changes, this might
     // lead to eratic behavior. For now, we don't have such a scenario
     this._mapsWrapper.setCenter(newCenter);
