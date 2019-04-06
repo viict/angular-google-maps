@@ -46,6 +46,20 @@ export class GoogleMapsAPIWrapper {
       if (addToMap) {
         options.map = map;
       }
+      if (options.icon) {
+        const { anchor, size, origin } = options.icon;
+        if (size) {
+          options.icon.size = new google.maps.Size(size[0], size[1]);
+          options.icon.scaledSize = new google.maps.Size(size[0], size[1]);
+        }
+        if (origin) {
+          options.icon.origin = new google.maps.Point(origin[0], origin[1]);
+        }
+        if (anchor) {
+          options.icon.anchor = new google.maps.Point(anchor[0], anchor[1]);
+        }
+      }
+
       return new google.maps.Marker(options);
     });
   }

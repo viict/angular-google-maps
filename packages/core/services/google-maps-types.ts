@@ -1,5 +1,7 @@
 export var google: any;
 
+export type TupleSize = [ number, number ];
+
 export interface GoogleMap extends MVCObject {
   data?: Data;
   constructor(el: HTMLElement, opts?: MapOptions): void;
@@ -30,7 +32,7 @@ export interface Marker extends MVCObject {
   setTitle(title: string): void;
   setLabel(label: string|MarkerLabel): void;
   setDraggable(draggable: boolean): void;
-  setIcon(icon: string): void;
+  setIcon(icon: string|IconOptions): void;
   setOpacity(opacity: number): void;
   setVisible(visible: boolean): void;
   setZIndex(zIndex: number): void;
@@ -39,13 +41,21 @@ export interface Marker extends MVCObject {
   setClickable(clickable: boolean): void;
 }
 
+export interface IconOptions {
+  url: string;
+  size?: TupleSize;
+  scaledSize?: TupleSize;
+  origin?: TupleSize;
+  anchor?: TupleSize;
+}
+
 export interface MarkerOptions {
   position: LatLng|LatLngLiteral;
   title?: string;
   map?: GoogleMap;
   label?: string|MarkerLabel;
   draggable?: boolean;
-  icon?: string;
+  icon?: IconOptions;
   opacity?: number;
   visible?: boolean;
   zIndex?: number;

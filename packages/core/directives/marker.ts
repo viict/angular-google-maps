@@ -39,7 +39,8 @@ let markerId = 0;
   ],
   inputs: [
     'latitude', 'longitude', 'title', 'label', 'draggable: markerDraggable', 'iconUrl',
-    'openInfoWindow', 'opacity', 'visible', 'zIndex', 'animation'
+    'iconOrigin', 'iconAnchor', 'iconSize', 'openInfoWindow', 'opacity', 'visible',
+    'zIndex', 'animation'
   ],
   outputs: ['markerClick', 'dragEnd', 'mouseOver', 'mouseOut']
 })
@@ -74,6 +75,21 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
    * Icon (the URL of the image) for the foreground.
    */
   @Input() iconUrl: string;
+
+  /**
+   * Define the width and height for the marker
+   */
+  @Input() iconSize: mapTypes.TupleSize = null;
+
+  /**
+   * Define the origin X and Y for the marker
+   */
+  @Input() iconOrigin: mapTypes.TupleSize = null;
+
+  /**
+   * Define the anchor X and Y for the marker
+   */
+  @Input() iconAnchor: mapTypes.TupleSize = null;
 
   /**
    * If true, the marker is visible
@@ -206,7 +222,7 @@ export class AgmMarker implements OnDestroy, OnChanges, AfterContentInit, FitBou
     if (changes['draggable']) {
       this._markerManager.updateDraggable(this);
     }
-    if (changes['iconUrl']) {
+    if (changes['iconUrl'] || changes['iconAnchor'] || changes['iconOrigin'] || changes['iconSize']) {
       this._markerManager.updateIcon(this);
     }
     if (changes['opacity']) {
